@@ -1,4 +1,3 @@
-import Fruit.{Apple, Potato}
 import cats.effect.IO
 import io.circe.generic.extras.Configuration
 import io.circe.generic.extras.semiauto.deriveConfiguredCodec
@@ -17,17 +16,35 @@ object Fruit {
 
   case class Potato(weight: Double) extends Fruit
 
-  private implicit val config: Configuration = Configuration.default
+  private implicit val circeConfig: Configuration = Configuration.default
   implicit val fruitCodec: io.circe.Codec[Fruit] = deriveConfiguredCodec
+
+  def examples: List[Fruit] = List(Apple("red"), Potato(1.0))
+}
+
+
+sealed trait Fruit2
+
+object Fruit2 {
+  case class Apple(color: String) extends Fruit2
+
+  case class Potato(weight: Double) extends Fruit2
+
+  private implicit val circeConfig: Configuration = Configuration.default.withDiscriminator("fruit")
+  implicit val fruitCodec: io.circe.Codec[Fruit2] = deriveConfiguredCodec
+
+  private implicit val tapirConfig = sttp.tapir.generic.Configuration.default.withDiscriminator("fruit")
+  implicit val fruitSchema: sttp.tapir.Schema[Fruit2] = sttp.tapir.Schema.derived
+
+  def examples: List[Fruit2] = List(Apple("red"), Potato(1.0))
 }
 
 object Endpoints {
   val ws = endpoint.get
     .in("ws")
     .out(
-      webSocketBody[Fruit, CodecFormat.Json, Fruit, CodecFormat.Json](Fs2Streams[IO])
-        .requestsExample(Apple("red"))
-        .requestsExample(Potato(1.0))
+      webSocketBody[Fruit2, CodecFormat.Json, Fruit2, CodecFormat.Json](Fs2Streams[IO])
+        .responsesExamples(Fruit2.examples)
     )
 
   val wsServerEndpoint = ws.serverLogicSuccess[IO](_ => IO(identity))
