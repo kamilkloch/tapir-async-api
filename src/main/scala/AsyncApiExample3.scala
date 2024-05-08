@@ -13,22 +13,22 @@ import sttp.tapir.json.circe._
  * Result:
  * ```
  *   messages:
- *   Apple:
- *     examples:
- *     - payload:
- *       - color: red
- *       - color: green
+ *    Apple:
+ *      examples:
+ *      - payload:
+ *        - color: red
+ *        - color: green
  * ```
  *
  * Expected:
  * ```
  *   messages:
- *   Apple:
- *     examples:
- *     - payload:
- *       color: red
- *     - payload:
- *       color: green
+ *    Apple:
+ *      examples:
+ *      - payload:
+ *        color: red
+ *      - payload:
+ *        color: green
  * ```
  */
 object AsyncApiExample3 {

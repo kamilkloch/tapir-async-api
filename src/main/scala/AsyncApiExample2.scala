@@ -18,12 +18,7 @@ import sttp.tapir.json.circe._
   *     Potato: '#/components/schemas/Potato'
   * ```
   *
-  * It should look like (with default to schema name used as discriminator):
-  * ```
-  * discriminator: fruit
-  * ```
-  *
-  * Or alternatively - with explicitly provided discriminator values using `const` override.
+  * It should explicitly provide discriminator values using `const` override.
   * ```
   * Fruit:
   *   title: Fruit
